@@ -108,4 +108,48 @@ export type RosterMember = {
   avatar_url: string | null;
   sort_order: number;
   updated_at: string;
+  // Profil détaillé (rempli par chaque admin)
+  trophies: number | null;
+  ranked_rank: string | null;
+  fav_brawler: string | null;
+  brawler_type: string | null;
+  fav_mode: string | null;
+  emote_url: string | null;
+  fav_food: string | null;
+  fav_drink: string | null;
+  fav_skin: string | null;
+  quote: string | null;
 };
+
+// Options proposées dans le formulaire de profil (thème Brawl Stars).
+export const RANKED_TIERS = [
+  'Bronze',
+  'Argent',
+  'Or',
+  'Diamant',
+  'Mythique',
+  'Légende',
+  'Maître',
+  'Pro',
+] as const;
+
+export const BRAWLER_TYPES = [
+  'Dégâts',
+  'Tank',
+  'Tireur d’élite',
+  'Artillerie',
+  'Contrôle',
+  'Assassin',
+  'Support',
+] as const;
+
+export const GAME_MODES = [
+  'Razzia de gemmes',
+  'Brawlball',
+  'Survivant',
+  'Braquage',
+  'Chasse aux étoiles',
+  'Zone réservée',
+  'Knockout',
+  'Duels',
+] as const;

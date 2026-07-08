@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import Countdown from '@/components/Countdown';
-import Avatar from '@/components/Avatar';
-import RosterEditor from '@/components/RosterEditor';
+import RosterCard from '@/components/RosterCard';
 import { getSession } from '@/lib/auth';
 import {
   computeStats,
@@ -60,6 +59,16 @@ function normalizeRoster(roster: RosterMember[]): RosterMember[] {
         avatar_url: null,
         sort_order: i,
         updated_at: '',
+        trophies: null,
+        ranked_rank: null,
+        fav_brawler: null,
+        brawler_type: null,
+        fav_mode: null,
+        emote_url: null,
+        fav_food: null,
+        fav_drink: null,
+        fav_skin: null,
+        quote: null,
       }
     );
   });
@@ -147,33 +156,19 @@ export default async function HomePage() {
 
       {/* ROSTER */}
       <section className="animate-fade-in">
-        <h2 className="section-title heading-accent mb-6">Roster</h2>
+        <h2 className="section-title heading-accent mb-2">Roster</h2>
+        <p className="mb-6 text-sm text-slate-400">
+          Clique sur un membre pour voir son profil.
+        </p>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {roster.map((m) => {
-            const isCaptain = m.role_label.toLowerCase() === 'captain';
-            return (
-              <div
-                key={m.username}
-                className="card group flex flex-col items-center p-6 text-center"
-              >
-                {isSuper && <RosterEditor member={m} />}
-                <Avatar
-                  name={m.display_name}
-                  src={m.avatar_url}
-                  size={96}
-                  highlight={m.username.toLowerCase() === 'chatax'}
-                />
-                <p className="mt-4 text-lg font-bold text-white">{m.display_name}</p>
-                <span
-                  className={`badge mt-1 ${
-                    isCaptain ? 'bg-gold/15 text-gold' : 'bg-primary/15 text-accent'
-                  }`}
-                >
-                  {isCaptain ? '👑 Captain' : 'Member'}
-                </span>
-              </div>
-            );
-          })}
+          {roster.map((m) => (
+            <RosterCard
+              key={m.username}
+              member={m}
+              canEdit={isSuper || session?.username?.toLowerCase() === m.username.toLowerCase()}
+              isSuper={isSuper}
+            />
+          ))}
         </div>
       </section>
 

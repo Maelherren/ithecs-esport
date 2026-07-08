@@ -37,8 +37,30 @@ create table if not exists public.roster (
   role_label   text not null default 'Member',   -- 'Captain' | 'Member'
   avatar_url   text,
   sort_order   int  not null default 0,
-  updated_at   timestamptz not null default now()
+  updated_at   timestamptz not null default now(),
+  -- Profil détaillé, rempli par chaque admin (thème Brawl Stars)
+  trophies     int,
+  ranked_rank  text,
+  fav_brawler  text,
+  brawler_type text,
+  fav_mode     text,
+  emote_url    text,
+  fav_food     text,
+  fav_drink    text,
+  fav_skin     text,
+  quote        text
 );
+-- Colonnes de profil ajoutées si la table existait déjà.
+alter table public.roster add column if not exists trophies     int;
+alter table public.roster add column if not exists ranked_rank  text;
+alter table public.roster add column if not exists fav_brawler  text;
+alter table public.roster add column if not exists brawler_type text;
+alter table public.roster add column if not exists fav_mode     text;
+alter table public.roster add column if not exists emote_url    text;
+alter table public.roster add column if not exists fav_food     text;
+alter table public.roster add column if not exists fav_drink    text;
+alter table public.roster add column if not exists fav_skin     text;
+alter table public.roster add column if not exists quote        text;
 
 -- ---------------------------------------------------------------------
 --  CALENDRIER MATCHERINO
