@@ -37,11 +37,11 @@ export default async function MatcherinoPage() {
         </div>
       )}
 
-      <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {events.map((e) => {
           const upcoming = isUpcoming(e.date, e.match_time);
           return (
-            <article key={e.id} className="card animate-fade-in p-6">
+            <article key={e.id} className="card animate-fade-in flex flex-col p-6">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-bold text-white">{e.name}</h2>

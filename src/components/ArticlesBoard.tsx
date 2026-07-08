@@ -46,7 +46,7 @@ export default function ArticlesBoard({
             key={a.id}
             className="card animate-fade-in flex flex-col overflow-hidden"
           >
-            {a.image_url ? (
+            {a.image_url && (
               <div className="relative aspect-video w-full overflow-hidden bg-night">
                 <Image
                   src={a.image_url}
@@ -55,10 +55,6 @@ export default function ArticlesBoard({
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover transition-transform duration-500 hover:scale-105"
                 />
-              </div>
-            ) : (
-              <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-abyss to-steel/40 text-4xl">
-                🎮
               </div>
             )}
 
