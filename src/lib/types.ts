@@ -80,6 +80,7 @@ export type ResultRound = {
   rounds_won: number;
   rounds_lost: number;
   sets_to_win: number;
+  comment: string | null;
 };
 
 export type MatchResult = {

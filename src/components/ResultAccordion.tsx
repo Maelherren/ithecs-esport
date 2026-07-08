@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { MatchResult } from '@/lib/types';
-import { isRoundWon } from '@/lib/data';
+import { isRoundPlayed, isRoundWon } from '@/lib/data';
 
 // Détail dépliable des rounds d'un match.
 export default function ResultAccordion({ result }: { result: MatchResult }) {
@@ -23,27 +23,49 @@ export default function ResultAccordion({ result }: { result: MatchResult }) {
       {open && (
         <div className="animate-fade-in mt-3 space-y-2">
           {rounds.map((r) => {
+            const played = isRoundPlayed(r);
+
+            // Ligne « commentaire seul » : score 0–0, on n'affiche que le texte.
+            if (!played) {
+              return (
+                <div
+                  key={r.id}
+                  className="flex flex-wrap items-center gap-2 rounded-md border border-steel/40 bg-night/50 px-3 py-2 text-sm"
+                >
+                  <span className="font-semibold text-white">Round {r.round_number}</span>
+                  <span className="italic text-slate-300">
+                    {r.comment?.trim() || '—'}
+                  </span>
+                </div>
+              );
+            }
+
             const won = isRoundWon(r.sets_won, r.sets_to_win);
             return (
               <div
                 key={r.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-steel/40 bg-night/50 px-3 py-2 text-sm"
+                className="rounded-md border border-steel/40 bg-night/50 px-3 py-2 text-sm"
               >
-                <span className="font-semibold text-white">Round {r.round_number}</span>
-                <span className="text-slate-300">
-                  {r.sets_won} set{r.sets_won > 1 ? 's' : ''} – {r.sets_lost} set
-                  {r.sets_lost > 1 ? 's' : ''}
-                  <span className="mx-2 text-slate-600">|</span>
-                  Rounds gagnés : {r.rounds_won} – {r.rounds_lost}
-                </span>
-                <span className="text-xs text-slate-500">Bo{r.sets_to_win * 2 - 1}</span>
-                <span
-                  className={`badge ${
-                    won ? 'bg-emerald-500/15 text-emerald-300' : 'bg-red-500/15 text-red-300'
-                  }`}
-                >
-                  {won ? 'Gagné' : 'Perdu'}
-                </span>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-semibold text-white">Round {r.round_number}</span>
+                  <span className="text-slate-300">
+                    {r.sets_won} set{r.sets_won > 1 ? 's' : ''} – {r.sets_lost} set
+                    {r.sets_lost > 1 ? 's' : ''}
+                    <span className="mx-2 text-slate-600">|</span>
+                    Rounds gagnés : {r.rounds_won} – {r.rounds_lost}
+                  </span>
+                  <span className="text-xs text-slate-500">Bo{r.sets_to_win * 2 - 1}</span>
+                  <span
+                    className={`badge ${
+                      won ? 'bg-emerald-500/15 text-emerald-300' : 'bg-red-500/15 text-red-300'
+                    }`}
+                  >
+                    {won ? 'Gagné' : 'Perdu'}
+                  </span>
+                </div>
+                {r.comment?.trim() && (
+                  <p className="mt-1 text-xs italic text-slate-400">{r.comment.trim()}</p>
+                )}
               </div>
             );
           })}

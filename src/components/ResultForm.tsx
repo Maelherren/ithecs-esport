@@ -13,6 +13,7 @@ type RoundDraft = {
   rounds_won: number;
   rounds_lost: number;
   sets_to_win: number;
+  comment: string;
 };
 
 const emptyRound = (): RoundDraft => ({
@@ -21,6 +22,7 @@ const emptyRound = (): RoundDraft => ({
   rounds_won: 0,
   rounds_lost: 0,
   sets_to_win: 1,
+  comment: '',
 });
 
 export default function ResultForm({
@@ -42,6 +44,7 @@ export default function ResultForm({
           rounds_won: r.rounds_won,
           rounds_lost: r.rounds_lost,
           sets_to_win: r.sets_to_win,
+          comment: r.comment ?? '',
         }))
       : [emptyRound()],
   );
@@ -65,6 +68,7 @@ export default function ResultForm({
             rounds_won: r.rounds_won,
             rounds_lost: r.rounds_lost,
             sets_to_win: r.sets_to_win,
+            comment: r.comment ?? '',
           }))
         : [emptyRound()],
     );
@@ -154,6 +158,17 @@ export default function ResultForm({
                           <option value={3}>Bo5 (3)</option>
                         </select>
                       </div>
+                    </div>
+                    <div className="mt-2">
+                      <label className="label">Commentaire</label>
+                      <input
+                        type="text"
+                        value={r.comment}
+                        onChange={(e) => updateRound(i, { comment: e.target.value })}
+                        maxLength={300}
+                        placeholder="Optionnel — si le score est 0–0, seul le commentaire s'affiche"
+                        className="input"
+                      />
                     </div>
                   </div>
                 ))}

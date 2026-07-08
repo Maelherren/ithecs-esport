@@ -16,6 +16,7 @@ type RoundInput = {
   rounds_won: number;
   rounds_lost: number;
   sets_to_win: number;
+  comment: string | null;
 };
 
 // Les rounds sont transmis en JSON (le client gère l'ajout/suppression dynamique).
@@ -32,12 +33,14 @@ function parseRounds(raw: string): RoundInput[] {
     const o = r as Record<string, unknown>;
     const clampInt = (v: unknown) => Math.max(0, Number.parseInt(String(v ?? 0), 10) || 0);
     const stw = Number.parseInt(String(o.sets_to_win ?? 1), 10);
+    const comment = String(o.comment ?? '').trim().slice(0, 300);
     return {
       sets_won: clampInt(o.sets_won),
       sets_lost: clampInt(o.sets_lost),
       rounds_won: clampInt(o.rounds_won),
       rounds_lost: clampInt(o.rounds_lost),
       sets_to_win: [1, 2, 3].includes(stw) ? stw : 1,
+      comment: comment || null,
     };
   });
 }

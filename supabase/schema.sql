@@ -116,8 +116,11 @@ create table if not exists public.result_rounds (
   sets_lost    int  not null default 0,
   rounds_won   int  not null default 0,
   rounds_lost  int  not null default 0,
-  sets_to_win  int  not null default 1 check (sets_to_win in (1, 2, 3))
+  sets_to_win  int  not null default 1 check (sets_to_win in (1, 2, 3)),
+  comment      text
 );
+-- Ajout de la colonne commentaire si la table existait déjà.
+alter table public.result_rounds add column if not exists comment text;
 
 -- ---------------------------------------------------------------------
 --  ACTUALITÉ & INFORMATION

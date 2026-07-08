@@ -90,24 +90,38 @@ export function isRoundWon(sets_won: number, sets_to_win: number): boolean {
   return sets_won >= sets_to_win && sets_won > 0;
 }
 
-// Un match est une victoire si on gagne la majorité des rounds.
+// Un round est « joué » s'il a un score (sinon c'est une ligne de commentaire seul,
+// score 0–0, qui n'entre pas dans les statistiques).
+export function isRoundPlayed(r: { sets_won: number; sets_lost: number }): boolean {
+  return r.sets_won > 0 || r.sets_lost > 0;
+}
+
+// Un match est une victoire si on gagne la majorité des rounds joués.
 export function isMatchWon(result: MatchResult): boolean {
-  const wonRounds = result.rounds?.filter((r) =>
+  const played = (result.rounds ?? []).filter(isRoundPlayed);
+  const wonRounds = played.filter((r) =>
     isRoundWon(r.sets_won, r.sets_to_win),
-  ).length ?? 0;
-  const total = result.rounds?.length ?? 0;
-  return total > 0 && wonRounds > total / 2;
+  ).length;
+  return played.length > 0 && wonRounds > played.length / 2;
 }
 
 export function computeStats(results: MatchResult[]) {
   let wins = 0;
   let losses = 0;
+  let roundsWon = 0;
+  let roundsPlayed = 0;
   for (const r of results) {
-    if ((r.rounds?.length ?? 0) === 0) continue;
+    const played = (r.rounds ?? []).filter(isRoundPlayed);
+    if (played.length === 0) continue;
+    for (const rd of played) {
+      roundsPlayed += 1;
+      if (isRoundWon(rd.sets_won, rd.sets_to_win)) roundsWon += 1;
+    }
     if (isMatchWon(r)) wins += 1;
     else losses += 1;
   }
   const total = wins + losses;
-  const winRate = total > 0 ? Math.round((wins / total) * 100) : 0;
-  return { wins, losses, total, winRate };
+  // Win rate calculé sur les rounds gagnés (Bo1/Bo3/Bo5), pas sur les matchs.
+  const winRate = roundsPlayed > 0 ? Math.round((roundsWon / roundsPlayed) * 100) : 0;
+  return { wins, losses, total, winRate, roundsWon, roundsPlayed };
 }
