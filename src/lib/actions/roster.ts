@@ -31,7 +31,7 @@ export async function updateProfile(formData: FormData) {
     display_name: displayName(username),
     sort_order: order < 0 ? 0 : order,
     updated_at: new Date().toISOString(),
-    ranked_rank: optionalStr(formData.get('ranked_rank'), 40),
+    ranked_elo: optionalInt(formData.get('ranked_elo')),
     fav_brawler: optionalStr(formData.get('fav_brawler'), 40),
     brawler_type: optionalStr(formData.get('brawler_type'), 40),
     fav_mode: optionalStr(formData.get('fav_mode'), 40),

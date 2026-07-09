@@ -40,7 +40,7 @@ create table if not exists public.roster (
   updated_at   timestamptz not null default now(),
   -- Profil détaillé, rempli par chaque admin (thème Brawl Stars)
   trophies     int,
-  ranked_rank  text,
+  ranked_elo   int,
   fav_brawler  text,
   brawler_type text,
   fav_mode     text,
@@ -52,7 +52,7 @@ create table if not exists public.roster (
 );
 -- Colonnes de profil ajoutées si la table existait déjà.
 alter table public.roster add column if not exists trophies     int;
-alter table public.roster add column if not exists ranked_rank  text;
+alter table public.roster add column if not exists ranked_elo   int;
 alter table public.roster add column if not exists fav_brawler  text;
 alter table public.roster add column if not exists brawler_type text;
 alter table public.roster add column if not exists fav_mode     text;

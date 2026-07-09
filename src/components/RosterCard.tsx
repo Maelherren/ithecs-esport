@@ -55,7 +55,11 @@ export default function RosterCard({
       label: 'Trophées',
       value: m.trophies != null ? m.trophies.toLocaleString('fr-FR') : null,
     },
-    { icon: '🎖️', label: 'Rang Ranked', value: m.ranked_rank },
+    {
+      icon: '🎖️',
+      label: 'Élo max',
+      value: m.ranked_elo != null ? m.ranked_elo.toLocaleString('fr-FR') : null,
+    },
     { icon: '⭐', label: 'Brawler préféré', value: m.fav_brawler },
     { icon: '🧩', label: 'Type de brawler', value: m.brawler_type },
     { icon: '🎯', label: 'Mode préféré', value: m.fav_mode },

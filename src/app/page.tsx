@@ -60,7 +60,7 @@ function normalizeRoster(roster: RosterMember[]): RosterMember[] {
         sort_order: i,
         updated_at: '',
         trophies: null,
-        ranked_rank: null,
+        ranked_elo: null,
         fav_brawler: null,
         brawler_type: null,
         fav_mode: null,

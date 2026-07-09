@@ -3,12 +3,7 @@
 import { useRouter } from 'next/navigation';
 import SubmitButton from './SubmitButton';
 import { updateProfile } from '@/lib/actions/roster';
-import {
-  BRAWLER_TYPES,
-  GAME_MODES,
-  RANKED_TIERS,
-  type RosterMember,
-} from '@/lib/types';
+import { BRAWLER_TYPES, GAME_MODES, type RosterMember } from '@/lib/types';
 
 export default function ProfileForm({
   member,
@@ -75,15 +70,16 @@ export default function ProfileForm({
             <p className="mt-1 text-xs text-slate-500">Arrondi au palier de 100.</p>
           </div>
           <div>
-            <label className="label">Rang Ranked</label>
-            <select name="ranked_rank" defaultValue={member.ranked_rank ?? ''} className="input">
-              <option value="">—</option>
-              {RANKED_TIERS.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+            <label className="label">Élo max (Ranked)</label>
+            <input
+              type="number"
+              name="ranked_elo"
+              min={0}
+              defaultValue={member.ranked_elo ?? ''}
+              placeholder="ex : 1050"
+              className="input"
+            />
+            <p className="mt-1 text-xs text-slate-500">Élo maximum atteint.</p>
           </div>
           <div>
             <label className="label">Brawler préféré</label>

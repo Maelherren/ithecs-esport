@@ -110,7 +110,7 @@ export type RosterMember = {
   updated_at: string;
   // Profil détaillé (rempli par chaque admin)
   trophies: number | null;
-  ranked_rank: string | null;
+  ranked_elo: number | null;
   fav_brawler: string | null;
   brawler_type: string | null;
   fav_mode: string | null;
@@ -122,17 +122,6 @@ export type RosterMember = {
 };
 
 // Options proposées dans le formulaire de profil (thème Brawl Stars).
-export const RANKED_TIERS = [
-  'Bronze',
-  'Argent',
-  'Or',
-  'Diamant',
-  'Mythique',
-  'Légende',
-  'Maître',
-  'Pro',
-] as const;
-
 export const BRAWLER_TYPES = [
   'Dégâts',
   'Tank',
