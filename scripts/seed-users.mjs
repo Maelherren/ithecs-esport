@@ -40,7 +40,7 @@ const USERS = [
 
 const ROSTER = [
   { username: 'chatax', display_name: 'Chatax', role_label: 'Captain', sort_order: 0 },
-  { username: 'shurtugal', display_name: "Shurt'ugal", role_label: 'Member', sort_order: 1 },
+  { username: 'shurtugal', display_name: "Shur'tugal", role_label: 'Member', sort_order: 1 },
   { username: 'etna', display_name: 'Etna', role_label: 'Member', sort_order: 2 },
   { username: 'orby', display_name: 'Orby', role_label: 'Member', sort_order: 3 },
 ];

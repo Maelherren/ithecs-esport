@@ -12,7 +12,7 @@ export const ADMIN_USERNAMES = ['chatax', 'shurtugal', 'etna', 'orby'] as const;
 // Noms d'affichage des 4 membres (clé = username en minuscules).
 export const ADMIN_DISPLAY: Record<string, string> = {
   chatax: 'Chatax',
-  shurtugal: "Shurt'ugal",
+  shurtugal: "Shur'tugal",
   etna: 'Etna',
   orby: 'Orby',
 };
