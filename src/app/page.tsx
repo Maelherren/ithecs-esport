@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import Countdown from '@/components/Countdown';
 import RosterCard from '@/components/RosterCard';
+import { SkeletonGrid } from '@/components/SkeletonCard';
 import { getSession } from '@/lib/auth';
 import {
   computeStats,
@@ -11,7 +13,7 @@ import {
   getScrimEvents,
   isMatchWon,
 } from '@/lib/data';
-import { ADMIN_USERNAMES, displayName, type RosterMember } from '@/lib/types';
+import { ADMIN_USERNAMES, displayName, type RosterMember, type SessionUser } from '@/lib/types';
 import { formatDateShort, formatTime, isUpcoming, toISODateTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
@@ -74,18 +76,39 @@ function normalizeRoster(roster: RosterMember[]): RosterMember[] {
   });
 }
 
+// Section Roster chargée en Suspense (fetch indépendant + skeleton).
+async function RosterSection({
+  session,
+  isSuper,
+}: {
+  session: SessionUser | null;
+  isSuper: boolean;
+}) {
+  const roster = normalizeRoster(await getRoster());
+  return (
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {roster.map((m) => (
+        <RosterCard
+          key={m.username}
+          member={m}
+          canEdit={isSuper || session?.username?.toLowerCase() === m.username.toLowerCase()}
+          isSuper={isSuper}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default async function HomePage() {
-  const [matcherino, scrim, results, rosterRaw, session] = await Promise.all([
+  const [matcherino, scrim, results, session] = await Promise.all([
     getMatcherinoEvents(),
     getScrimEvents(),
     getResults(),
-    getRoster(),
     getSession(),
   ]);
 
   const events = upcomingEvents(matcherino, scrim).slice(0, 3);
   const next = events[0];
-  const roster = normalizeRoster(rosterRaw);
   const stats = computeStats(results);
   const latestResults = results.slice(0, 3);
   const isSuper = session?.role === 'super-admin';
@@ -160,16 +183,17 @@ export default async function HomePage() {
         <p className="mb-6 text-sm text-slate-400">
           Clique sur un membre pour voir son profil.
         </p>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {roster.map((m) => (
-            <RosterCard
-              key={m.username}
-              member={m}
-              canEdit={isSuper || session?.username?.toLowerCase() === m.username.toLowerCase()}
-              isSuper={isSuper}
+        <Suspense
+          fallback={
+            <SkeletonGrid
+              count={4}
+              variant="avatar"
+              className="grid grid-cols-2 gap-4 lg:grid-cols-4"
             />
-          ))}
-        </div>
+          }
+        >
+          <RosterSection session={session} isSuper={isSuper} />
+        </Suspense>
       </section>
 
       {/* DERNIERS RÉSULTATS + STATS */}

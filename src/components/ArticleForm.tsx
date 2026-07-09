@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from './Modal';
 import SubmitButton from './SubmitButton';
+import ImageInput from './ImageInput';
 import type { Article } from '@/lib/types';
 
 // Formulaire générique d'article (Actualité / Information).
@@ -68,10 +69,8 @@ export default function ArticleForm({
             </div>
             <div>
               <label className="label">Image {isEdit ? '(remplace l’actuelle)' : ''}</label>
-              <input
-                type="file"
+              <ImageInput
                 name="image"
-                accept="image/*"
                 className="input file:mr-3 file:rounded file:border-0 file:bg-primary file:px-3 file:py-1 file:text-white"
               />
               <p className="mt-1 text-xs text-slate-500">

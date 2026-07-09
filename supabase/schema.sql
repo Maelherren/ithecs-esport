@@ -75,8 +75,12 @@ create table if not exists public.matcherino_events (
   queue_position int,
   queue_max      int,
   matcherino_link text,
+  email_sent     boolean not null default false,  -- email « 3 présents » déjà envoyé ?
   created_at     timestamptz not null default now()
 );
+-- Colonne ajoutée si la table existait déjà.
+alter table public.matcherino_events
+  add column if not exists email_sent boolean not null default false;
 
 create table if not exists public.matcherino_responses (
   id         uuid primary key default gen_random_uuid(),
@@ -85,6 +89,18 @@ create table if not exists public.matcherino_responses (
   status     text not null check (status in ('present', 'absent', 'uncertain')),
   updated_at timestamptz not null default now(),
   unique (event_id, username)
+);
+
+-- ---------------------------------------------------------------------
+--  NOTIFICATIONS PUSH (Web Push)
+-- ---------------------------------------------------------------------
+create table if not exists public.push_subscriptions (
+  id          uuid primary key default gen_random_uuid(),
+  endpoint    text not null unique,
+  keys_p256dh text not null,
+  keys_auth   text not null,
+  username    text,
+  created_at  timestamptz not null default now()
 );
 
 -- ---------------------------------------------------------------------
@@ -172,6 +188,9 @@ alter table public.users                enable row level security;
 alter table public.roster               enable row level security;
 alter table public.matcherino_events    enable row level security;
 alter table public.matcherino_responses enable row level security;
+-- push_subscriptions : AUCUNE policy (données sensibles = endpoints).
+-- Accès uniquement via la clé service_role côté serveur.
+alter table public.push_subscriptions   enable row level security;
 alter table public.scrim_events         enable row level security;
 alter table public.scrim_responses      enable row level security;
 alter table public.availability         enable row level security;

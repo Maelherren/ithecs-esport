@@ -86,7 +86,13 @@ export default function RosterCard({
         onClick={() => setOpen(true)}
         className="card group flex w-full flex-col items-center p-6 text-center transition-transform hover:-translate-y-1 hover:border-accent/60"
       >
-        <Avatar name={m.display_name} src={m.avatar_url} size={96} highlight={isChatax} />
+        <Avatar
+          name={m.display_name}
+          src={m.avatar_url}
+          size={96}
+          highlight={isChatax}
+          priority
+        />
         <p className="mt-4 text-lg font-bold text-white">{m.display_name}</p>
         <span
           className={`badge mt-1 ${

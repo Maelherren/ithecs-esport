@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { logoutAction } from '@/lib/actions/auth';
 import RoleBadge from './RoleBadge';
+import NotificationToggle from './NotificationToggle';
 import type { SessionUser } from '@/lib/types';
 
 export default function UserMenu({ user }: { user: SessionUser }) {
@@ -47,13 +48,14 @@ export default function UserMenu({ user }: { user: SessionUser }) {
       </button>
 
       {open && (
-        <div className="animate-fade-in absolute right-0 mt-2 w-52 overflow-hidden rounded-lg border border-steel/70 bg-abyss shadow-glow-lg">
+        <div className="animate-fade-in absolute right-0 mt-2 w-64 overflow-hidden rounded-lg border border-steel/70 bg-abyss shadow-glow-lg">
           <div className="border-b border-steel/50 px-4 py-3">
             <p className="text-sm font-semibold text-white">{user.username}</p>
             <div className="mt-1">
               <RoleBadge role={user.role} showLabel />
             </div>
           </div>
+          <NotificationToggle />
           <button
             onClick={handleLogout}
             className="w-full px-4 py-3 text-left text-sm text-slate-300 transition-colors hover:bg-steel/40 hover:text-white"

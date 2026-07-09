@@ -6,11 +6,13 @@ export default function Avatar({
   src,
   size = 96,
   highlight = false,
+  priority = false,
 }: {
   name: string;
   src?: string | null;
   size?: number;
   highlight?: boolean;
+  priority?: boolean;
 }) {
   if (src) {
     return (
@@ -19,6 +21,7 @@ export default function Avatar({
         alt={name}
         width={size}
         height={size}
+        priority={priority}
         className="rounded-full object-cover ring-2 ring-primary/60"
         style={{ width: size, height: size }}
       />

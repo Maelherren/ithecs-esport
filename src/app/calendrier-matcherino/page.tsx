@@ -1,23 +1,20 @@
+import { Suspense } from 'react';
 import MatcherinoForm from '@/components/MatcherinoForm';
 import PresenceControls from '@/components/PresenceControls';
 import DeleteButton from '@/components/DeleteButton';
 import Countdown from '@/components/Countdown';
+import { SkeletonGrid } from '@/components/SkeletonCard';
 import { getSession } from '@/lib/auth';
 import { getMatcherinoEvents, getMatcherinoResponses } from '@/lib/data';
 import { deleteMatcherinoEvent, setMatcherinoResponse } from '@/lib/actions/matcherino';
 import { formatDateFR, formatTime, isUpcoming, toISODateTime } from '@/lib/format';
+import type { SessionUser } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 export default async function MatcherinoPage() {
-  const [events, responses, session] = await Promise.all([
-    getMatcherinoEvents(),
-    getMatcherinoResponses(),
-    getSession(),
-  ]);
-
+  const session = await getSession();
   const isSuper = session?.role === 'super-admin';
-  const byEvent = (id: string) => responses.filter((r) => r.event_id === id);
 
   return (
     <div className="space-y-8">
@@ -31,6 +28,28 @@ export default async function MatcherinoPage() {
         {isSuper && <MatcherinoForm />}
       </div>
 
+      <Suspense fallback={<SkeletonGrid count={4} />}>
+        <MatcherinoList session={session} isSuper={isSuper} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function MatcherinoList({
+  session,
+  isSuper,
+}: {
+  session: SessionUser | null;
+  isSuper: boolean;
+}) {
+  const [events, responses] = await Promise.all([
+    getMatcherinoEvents(),
+    getMatcherinoResponses(),
+  ]);
+  const byEvent = (id: string) => responses.filter((r) => r.event_id === id);
+
+  return (
+    <>
       {events.length === 0 && (
         <div className="card p-8 text-center text-slate-400">
           Aucun tournoi programmé pour le moment.
@@ -112,6 +131,6 @@ export default async function MatcherinoPage() {
           );
         })}
       </div>
-    </div>
+    </>
   );
 }

@@ -1,6 +1,8 @@
+import { Suspense } from 'react';
 import ResultForm from '@/components/ResultForm';
 import ResultAccordion from '@/components/ResultAccordion';
 import DeleteButton from '@/components/DeleteButton';
+import SkeletonCard from '@/components/SkeletonCard';
 import { getSession } from '@/lib/auth';
 import { computeStats, getResults, isMatchWon } from '@/lib/data';
 import { deleteResult } from '@/lib/actions/results';
@@ -9,9 +11,8 @@ import { formatDateShort } from '@/lib/format';
 export const dynamic = 'force-dynamic';
 
 export default async function ResultatsPage() {
-  const [results, session] = await Promise.all([getResults(), getSession()]);
+  const session = await getSession();
   const isSuper = session?.role === 'super-admin';
-  const stats = computeStats(results);
 
   return (
     <div className="space-y-8">
@@ -23,6 +24,42 @@ export default async function ResultatsPage() {
         {isSuper && <ResultForm />}
       </div>
 
+      <Suspense fallback={<ResultsSkeleton />}>
+        <ResultsContent isSuper={isSuper} />
+      </Suspense>
+    </div>
+  );
+}
+
+function ResultsSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-3 gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="card animate-pulse p-4">
+            <div className="mx-auto h-8 w-12 rounded" style={{ backgroundColor: '#1a2d5a' }} />
+            <div
+              className="mx-auto mt-2 h-3 w-16 rounded opacity-70"
+              style={{ backgroundColor: '#1a2d5a' }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <SkeletonCard key={i} lines={2} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+async function ResultsContent({ isSuper }: { isSuper: boolean }) {
+  const results = await getResults();
+  const stats = computeStats(results);
+
+  return (
+    <>
       {/* Stats globales */}
       <div className="grid grid-cols-3 gap-3">
         <div className="card p-4 text-center">
@@ -78,6 +115,6 @@ export default async function ResultatsPage() {
           );
         })}
       </div>
-    </div>
+    </>
   );
 }

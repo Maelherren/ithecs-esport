@@ -1,3 +1,17 @@
+import withPWAInit from '@ducanh2912/next-pwa';
+
+const withPWA = withPWAInit({
+  dest: 'public',
+  register: true,
+  disable: process.env.NODE_ENV === 'development',
+  // Handlers push/notificationclick injectés dans le Service Worker généré.
+  customWorkerSrc: 'worker',
+  customWorkerDest: 'public',
+  workboxOptions: {
+    disableDevLogs: true,
+  },
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -13,4 +27,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);

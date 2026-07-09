@@ -3,7 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { requireAdmin, requireSuperAdmin } from '@/lib/auth';
+import { sendPushToAll } from '@/lib/push';
 import type { ScrimStatus } from '@/lib/types';
+import { formatDateShort, formatTime } from '@/lib/format';
 import { optionalStr, optionalTime, requireDate, str } from './helpers';
 
 const PATHS = ['/', '/calendrier-scrim'];
@@ -13,14 +15,28 @@ function revalidate() {
 
 export async function createScrimEvent(formData: FormData) {
   await requireSuperAdmin();
+  const date = requireDate(formData.get('date'));
+  const time = optionalTime(formData.get('time'));
+  const opponent = optionalStr(formData.get('opponent'), 200);
+
   const supabase = createAdminClient();
   const { error } = await supabase.from('scrim_events').insert({
-    date: requireDate(formData.get('date')),
-    time: optionalTime(formData.get('time')),
-    opponent: optionalStr(formData.get('opponent'), 200),
+    date,
+    time,
+    opponent,
     notes: optionalStr(formData.get('notes'), 2000),
   });
   if (error) throw new Error(error.message);
+
+  // Notification push à tous les abonnés (échec silencieux, non bloquant).
+  const heure = formatTime(time);
+  await sendPushToAll({
+    title: '⚔️ Nouveau scrim programmé',
+    body: `${opponent ? `vs ${opponent} — ` : ''}${formatDateShort(date)}${heure ? ` à ${heure}` : ''}`,
+    url: '/calendrier-scrim',
+    tag: 'scrim-event',
+  }).catch((e) => console.error('[push] Scrim:', e));
+
   revalidate();
 }
 

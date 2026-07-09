@@ -31,6 +31,7 @@ export type MatcherinoEvent = {
   queue_position: number | null;
   queue_max: number | null;
   matcherino_link: string | null;
+  email_sent: boolean;
   created_at: string;
 };
 

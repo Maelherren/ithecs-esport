@@ -1,23 +1,20 @@
+import { Suspense } from 'react';
 import ScrimForm from '@/components/ScrimForm';
 import PresenceControls from '@/components/PresenceControls';
 import DeleteButton from '@/components/DeleteButton';
 import Countdown from '@/components/Countdown';
+import { SkeletonGrid } from '@/components/SkeletonCard';
 import { getSession } from '@/lib/auth';
 import { getScrimEvents, getScrimResponses } from '@/lib/data';
 import { deleteScrimEvent, setScrimResponse } from '@/lib/actions/scrim';
 import { formatDateFR, formatTime, isUpcoming, toISODateTime } from '@/lib/format';
+import type { SessionUser } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ScrimPage() {
-  const [events, responses, session] = await Promise.all([
-    getScrimEvents(),
-    getScrimResponses(),
-    getSession(),
-  ]);
-
+  const session = await getSession();
   const isSuper = session?.role === 'super-admin';
-  const byEvent = (id: string) => responses.filter((r) => r.event_id === id);
 
   return (
     <div className="space-y-8">
@@ -31,6 +28,28 @@ export default async function ScrimPage() {
         {isSuper && <ScrimForm />}
       </div>
 
+      <Suspense fallback={<SkeletonGrid count={3} className="space-y-5" />}>
+        <ScrimList session={session} isSuper={isSuper} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ScrimList({
+  session,
+  isSuper,
+}: {
+  session: SessionUser | null;
+  isSuper: boolean;
+}) {
+  const [events, responses] = await Promise.all([
+    getScrimEvents(),
+    getScrimResponses(),
+  ]);
+  const byEvent = (id: string) => responses.filter((r) => r.event_id === id);
+
+  return (
+    <>
       {events.length === 0 && (
         <div className="card p-8 text-center text-slate-400">
           Aucun scrim programmé pour le moment.
@@ -83,6 +102,6 @@ export default async function ScrimPage() {
           );
         })}
       </div>
-    </div>
+    </>
   );
 }

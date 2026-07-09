@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import SubmitButton from './SubmitButton';
+import ImageInput from './ImageInput';
 import { updateProfile } from '@/lib/actions/roster';
 import { BRAWLER_TYPES, GAME_MODES, type RosterMember } from '@/lib/types';
 
@@ -42,10 +43,8 @@ export default function ProfileForm({
         )}
         <div className={isSuper ? '' : 'sm:col-span-2'}>
           <label className="label">Avatar</label>
-          <input
-            type="file"
+          <ImageInput
             name="avatar"
-            accept="image/*"
             className="input file:mr-3 file:rounded file:border-0 file:bg-primary file:px-3 file:py-1 file:text-white"
           />
           <p className="mt-1 text-xs text-slate-500">Vide = inchangé. Max 5 Mo.</p>
@@ -115,10 +114,8 @@ export default function ProfileForm({
           </div>
           <div>
             <label className="label">Emote préféré (image)</label>
-            <input
-              type="file"
+            <ImageInput
               name="emote"
-              accept="image/*"
               className="input file:mr-3 file:rounded file:border-0 file:bg-primary file:px-3 file:py-1 file:text-white"
             />
           </div>
